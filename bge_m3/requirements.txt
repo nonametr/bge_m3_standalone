@@ -1,0 +1,5 @@
+peft~=0.12.0
+requests~=2.32.3
+flask~=3.0.3
+flask-cors~=5.0.0
+FlagEmbedding~=1.2.11
