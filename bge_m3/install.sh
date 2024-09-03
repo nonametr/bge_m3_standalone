@@ -35,7 +35,7 @@ defaults
 frontend https-in
     bind *:443 ssl crt /etc/haproxy/haproxy.pem
     mode http
-    default_backend ollama_backend
+    default_backend bge_m3_backend
 
 backend bge_m3_backend
     mode http
