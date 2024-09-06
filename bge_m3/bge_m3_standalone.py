@@ -10,6 +10,15 @@ CORS(app)
 
 bge_m3_model = BGEM3FlagModel('BAAI/bge-m3', use_fp16=True, device="cuda")
 
+known_gpus = {
+    "RTX 2080": 1,
+    "RTX 4090": 8,
+    "RTX 4080": 6,
+    "RTX 4080S": 7,
+    "RTX 3090": 5,
+    "RTX 3080": 4,
+}
+
 def get_gpu_flops():
     A = torch.randn(1000, 1000, device='cuda')
     B = torch.randn(1000, 1000, device='cuda')
@@ -40,10 +49,10 @@ def generate_embeddings_from_prompts_standalone():
 
 @app.route('/info/gpu', methods=['GET'])
 def get_gpu_info():
-    gpu_perf = int(get_gpu_flops() / 1e12)
-    gpu_weight = int(gpu_perf / 10) + 1
+    # gpu_perf = int(get_gpu_flops() / 1e12)
+    # gpu_weight = int(gpu_perf / 10) + 1
     gpu_name = torch.cuda.get_device_name(0)
-    return jsonify({"gpu": gpu_name, "TFLOPS": gpu_perf, "weight": gpu_weight})
+    return jsonify({"gpu": gpu_name, "weight": known_gpus.get(gpu_name, 1)})
 
 
 @app.route('/health_check', methods=['GET'])
@@ -53,4 +62,4 @@ def health_check():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8093)
+    app.run(host='0.0.0.0', port=8099)
