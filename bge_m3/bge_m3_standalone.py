@@ -43,6 +43,7 @@ def generate_embeddings_from_prompts_standalone():
     pp_prompt_list = request.json.get('prompts', [])
 
     result = bge_m3_model.encode(pp_prompt_list, batch_size=12, max_length=8192)
+    torch.cuda.empty_cache()
 
     return jsonify({"success": True, "duration": time.time() - start_time, "embeddings": result['dense_vecs'].tolist()})
 
