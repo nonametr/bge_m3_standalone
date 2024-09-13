@@ -45,3 +45,4 @@ backend bge_m3_backend
 haproxy -f /etc/haproxy/haproxy.cfg -db &
 
 pip install -r requirements.txt
+pip install gunicorn
