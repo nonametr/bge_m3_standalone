@@ -1,3 +1,5 @@
+import json
+import threading
 import time
 
 import torch
@@ -9,6 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 bge_m3_model = BGEM3FlagModel('BAAI/bge-m3', use_fp16=True, device="cuda")
+gpu_lock = threading.Lock()
 
 known_gpus = {
     "RTX 2080": 1,
@@ -42,8 +45,9 @@ def generate_embeddings_from_prompts_standalone():
     start_time = time.time()
     pp_prompt_list = request.json.get('prompts', [])
 
-    result = bge_m3_model.encode(pp_prompt_list, return_dense=True, return_sparse=True, batch_size=12, max_length=8192)
-#    torch.cuda.empty_cache()
+    with gpu_lock:
+        result = bge_m3_model.encode(pp_prompt_list, return_dense=True, return_sparse=True, batch_size=6, max_length=8192)
+    torch.cuda.empty_cache()
 
     return jsonify({"success": True, "duration": time.time() - start_time, "embeddings": result['dense_vecs'].tolist(), "sparse_embeddings": [{key: float(value) for key, value in sp_vec.items()} for sp_vec in result['lexical_weights']]})
 
