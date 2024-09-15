@@ -1,4 +1,6 @@
 import json
+import random
+import string
 import threading
 import time
 
@@ -47,7 +49,7 @@ def generate_embeddings_from_prompts_standalone():
 
     with gpu_lock:
         result = bge_m3_model.encode(pp_prompt_list, return_dense=True, return_sparse=True, batch_size=6, max_length=8192)
-    torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
 
     return jsonify({"success": True, "duration": time.time() - start_time, "embeddings": result['dense_vecs'].tolist(), "sparse_embeddings": [{key: float(value) for key, value in sp_vec.items()} for sp_vec in result['lexical_weights']]})
 
@@ -64,6 +66,20 @@ def get_gpu_info():
 def health_check():
     return Response(status=200)
 
+
+
+
+def generate_random_text(length):
+    characters = string.ascii_letters + string.digits
+    random_text = ''.join(random.choice(characters) for _ in range(length))
+    return random_text
+
+def test_bge():
+    torch.cuda.empty_cache()
+    rand_test_list = []
+    for i in range(128):
+        rand_test_list.append(generate_random_text(random.randint(100, 1000)))
+    return bge_m3_model.encode(rand_test_list, return_dense=True, return_sparse=True, batch_size=6, max_length=8192)
 
 
 if __name__ == '__main__':
