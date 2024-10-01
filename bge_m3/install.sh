@@ -24,9 +24,9 @@ defaults
     option http-server-close
     option clitcpka
     option srvtcpka
-    timeout connect 10s
-    timeout client  3m
-    timeout server  3m
+    timeout connect 15s
+    timeout client  1m
+    timeout server  1m
     errorfile 400 /etc/haproxy/errors/400.http
     errorfile 403 /etc/haproxy/errors/403.http
     errorfile 408 /etc/haproxy/errors/408.http
@@ -42,7 +42,7 @@ frontend https-in
 
 backend bge_m3_backend
     mode http
-    server bge_m3_server 127.0.0.1:8093 maxconn 4 maxqueue 100
+    server bge_m3_server 127.0.0.1:8093 maxconn 1 maxqueue 5
 " > /etc/haproxy/haproxy.cfg
 
 haproxy -f /etc/haproxy/haproxy.cfg -db &
