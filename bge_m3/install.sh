@@ -42,7 +42,7 @@ frontend https-in
 
 backend bge_m3_backend
     mode http
-    server bge_m3_server 127.0.0.1:8093 maxconn 1 maxqueue 1
+    server bge_m3_server 127.0.0.1:8093 maxconn 4 maxqueue 12
 " > /etc/haproxy/haproxy.cfg
 
 haproxy -f /etc/haproxy/haproxy.cfg -db &
